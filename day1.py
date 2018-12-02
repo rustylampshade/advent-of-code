@@ -5,10 +5,7 @@ with open('inputs/1_1.txt', 'r') as aoc_input:
     frequency_changes = aoc_input.read().rstrip('\n').split('\n')
 
 starting_freq = 0
-for change in frequency_changes:
-    starting_freq += int(change)
-
-print starting_freq
+print starting_freq + sum([int(freq) for freq in frequency_changes])
 
 # PART 2
 
