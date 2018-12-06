@@ -16,10 +16,11 @@ def fully_react(chain):
         i += 1
     return chain
     
-print len(fully_react(orig[:]))
+print len(fully_react(orig))
 
 reaction_sizes = {}
+string_orig = ''.join(orig)
 for letter in string.ascii_lowercase:
-    modified = list(''.join(orig).replace(letter, '').replace(letter.upper(), ''))
+    modified = list(string_orig.replace(letter, '').replace(letter.upper(), ''))
     reaction_sizes[letter] = len(fully_react(modified))
-print min(reaction_sizes, key=reaction_sizes.get)
+print min(reaction_sizes.values())
