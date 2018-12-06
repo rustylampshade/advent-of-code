@@ -1,15 +1,16 @@
-import string
-
 with open('inputs/5_1.txt', 'r') as aoc_input:
-    orig = list(aoc_input.read().rstrip('\n'))
+    orig = [ord(letter) for letter in aoc_input.read().strip()]
 
 def fully_react(chain):
     i = 0
-    while i < len(chain) - 1:
+    finish = len(chain) - 1
+    while i < finish:
         # For some reason, the cases aren't separated by only 26 points but there are also six punctuation symbols between.
-        if abs(ord(chain[i]) - ord(chain[i+1])) == 32:
+        diff = chain[i] - chain[i+1]
+        if diff == 32 or diff == -32:
             del(chain[i+1])
             del(chain[i])
+            finish -= 2
             if i != 0:
                 i -=1
             continue
@@ -19,8 +20,6 @@ def fully_react(chain):
 print len(fully_react(orig))
 
 reaction_sizes = {}
-string_orig = ''.join(orig)
-for letter in string.ascii_lowercase:
-    modified = list(string_orig.replace(letter, '').replace(letter.upper(), ''))
-    reaction_sizes[letter] = len(fully_react(modified))
+for upper, lower in zip(range(65, 91), range(97, 123)):
+    reaction_sizes[upper] = len(fully_react([l for l in orig if l != lower and l != upper]))
 print min(reaction_sizes.values())
