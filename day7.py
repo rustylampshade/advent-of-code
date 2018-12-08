@@ -40,7 +40,7 @@ while step_map or working_elves:
     unblocked_steps = sorted([s.name for s in step_map.values() if not s.parents])
     if free_elves and unblocked_steps:
         for worker, step in zip(free_elves, unblocked_steps):
-            print 'Assigning an idle elf to work on {0} for {1} seconds'.format(step, 60+ord(step)-64)
+            #print 'Assigning an idle elf to work on {0} for {1} seconds'.format(step, 60+ord(step)-64)
             free_elves.pop()
             working_elves.append((step_map[step], 60 + ord(step) - 64))
             del step_map[step]
@@ -50,7 +50,7 @@ while step_map or working_elves:
         total_time += 1
         for worker in working_elves:
             if worker[1] == 0:
-                print 'Task {0} complete!'.format(worker[0].name)
+                #print 'Task {0} complete!'.format(worker[0].name)
                 for child in worker[0].children:
                     step_map[child].parents.remove(worker[0].name)
                 free_elves.append(None)
