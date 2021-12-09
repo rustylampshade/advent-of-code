@@ -1,0 +1,69 @@
+#! /usr/bin/env python3
+
+with open('3.txt', 'r') as infile:
+    lines = list(map(str.strip, infile.readlines()))
+    lines.sort()
+    line_bits = [list(s) for s in lines]
+    decimals = [int(s, 2) for s in lines]
+    bitcount = len(lines[0])
+
+def bitsearch(default_upwards):
+    """
+    Rather than actually try to go bit-by-bit and track a candidate set of reasonable numbers, we're really performing
+    binary search on the number space. Every number in the puzzle is a decimal, and if we compare "are there more numbers
+    with bit0 = 0 or bit0 = 1?" we're really asking if more are in the 0-15 range or 16-31. Then next halve the 16-31 space
+    and find if there are more numbers in the first half of that range or the second. 
+    """
+
+    bits = []
+    for i in range(0, bitcount):
+        lower = int(''.join(bits).ljust(bitcount, '0'), 2)
+        mid   = int((''.join(bits) + '1').ljust(bitcount, '0'), 2)
+        upper = int(''.join(bits).ljust(bitcount, '1'), 2)
+
+        candidates = [ d for d in decimals if d >= lower and d <= upper ]
+        if len(candidates) == 1:
+            return candidates[0]
+
+        if len([c for c in candidates if c < mid]) > len([c for c in candidates if c >= mid]):
+            bits.append(str(int(not default_upwards)))
+        else:
+            bits.append(str(int(default_upwards)))
+
+    return int(''.join(bits), 2)
+
+
+def compute_ratings():
+    """
+    Only cleverness here is that epsilon is the negation of gamma, so only bother tracking one of them and then can bitflip
+    gamma to get epsilon.
+    """
+    gamma_bits = []
+    ties = []
+    half = len(lines) / 2
+    for i in range(0, bitcount):
+        position_bits = [bits[i] for bits in line_bits]
+        zeros = position_bits.count('0')
+        if zeros == half:
+            ties.append(i)
+        if zeros > half:
+            gamma_bits.append('0')
+        else:
+            gamma_bits.append('1')
+    ones_mask = int(''.join(['1'] * len(gamma_bits)), 2)
+    gamma = int(''.join(gamma_bits), 2)
+    epsilon = ~gamma & ones_mask
+
+    mostly_oxygen = gamma_bits[:]
+    for j in ties:
+        mostly_oxygen[j] = '1'
+    print(min[d ^ int(''.join(mostly_oxygen), 2) for d in decimals])
+
+    return gamma, epsilon
+
+g, e = compute_ratings()
+oxygen = bitsearch(True)
+co2gen = bitsearch(False)
+print('Part 1: %s' % (g * e))
+print('Part 2: %s' % (oxygen * co2gen))
+
